@@ -1,0 +1,6 @@
+# -*- coding: utf-8 -*-
+from Arya.backends.base_module import BaseSaltMoude
+
+
+class File(BaseSaltMoude):
+    pass
