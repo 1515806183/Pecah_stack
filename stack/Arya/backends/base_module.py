@@ -14,9 +14,43 @@ class BaseSaltMoude(object):
         self.settings = settings
         self.host_list = []
 
+    def get_module_instance(self, *args, **kwargs):
+        # 在目录plugin 判断是否有user.py 模块
+        base_mode_name = kwargs.get('base_mode_name')
+        os_type = kwargs.get('os_type')
+
+        plugin_file_path = '%s/%s.py' % (self.settings.SALT_PLUGINS_DIR, base_mode_name)
+        if os.path.isfile(plugin_file_path):
+            # user.py存在， 则导入模块Arya.plugins.user的包
+            # <module 'Arya' from '/vagrant/Pecah_stack/stack/Arya/__init__.py'>
+            module_plugin = __import__('plugins.%s' % base_mode_name)
+            module_file = getattr(module_plugin, base_mode_name)  # 这里导入相对应的模块
+
+            # 根据操作系统类型来判断是否在模块下（user）有这个类CentosUser
+            # 操作系统类型的类CentosUser  类型+user
+            special_os_module_name = '%s%s' % (os_type.capitalize(), base_mode_name.capitalize())  # CentosUser
+            print('\033[0;41m------> %s: \033[0m' % special_os_module_name)
+
+            # Arya.plugins.user里是否存在CentosUser 这个类
+            if hasattr(module_file, special_os_module_name):
+                # 如果存在，则导入
+                module_instance = getattr(module_file, special_os_module_name)
+
+            else:
+                module_instance = getattr(module_file, base_mode_name.capitalize())
+
+            module_obj = module_instance(self.sys_args, self.db_models, self.settings)
+            return module_obj
+
+        else:
+            exit('[ %s ] is not exist' % base_mode_name)
+
     def process(self):
         self.fetch_hosts()
         self.config_data_dic = self.get_os_type_and_ip()
+
+    def is_reuqired(self, *args, **kwargs):
+        exit('Error: [ %s ] is not reuqired..' % args[0])
 
     def require(self, *args, **kwargs):
         """
@@ -26,9 +60,16 @@ class BaseSaltMoude(object):
         :param kwargs:
         :return:
         """
+        os_type = kwargs.get('os_type')
+        self.require_list = []
+
         for item in args[0]:
             for mod_name, mod_val in item.items():
-                print()
+                mod_obj = self.get_module_instance(base_mode_name=mod_name, os_type=os_type)
+                require_condition = mod_obj.is_reuqired(mod_name, mod_val)
+                self.require_list.append(require_condition)
+
+        print('\033[0;41mrequire_list: \033[0m', self.require_list)
 
     def get_os_type_and_ip(self):
         """
@@ -102,7 +143,7 @@ class BaseSaltMoude(object):
         else:
             exit(   '%s not config file' % state_filename)
 
-    def syntax_parser(self, section_name, mod_name, mod_data):
+    def syntax_parser(self, section_name, mod_name, mod_data, os_type):
         """
         语法检查
         :return:
@@ -117,7 +158,7 @@ class BaseSaltMoude(object):
             for key, val in data_item.items():
                 if hasattr(self, key):
                     state_func = getattr(self, key)
-                    state_func(val, section=section_name)
+                    state_func(val, section=section_name, os_type=os_type)
                 else:
                     exit(' [ %s ] 没有 [ %s ] 这个方法.' % (mod_name, key))
         else:
@@ -127,7 +168,18 @@ class BaseSaltMoude(object):
                 if hasattr(self, mod_action):
                     mod_action_func = getattr(self, mod_action)
                     # 拼接命令
-                    mod_action_func(section=section_name)
+                    cmd_list = mod_action_func(section=section_name, mod_data=mod_data) # present
+                    # present 这里mod_data 是flie模块使用， 把数据交给客户端处理
+                    data = {
+                        'cmd_list': cmd_list,
+                        'require_list': self.require_list
+                    }
+
+                    if type(cmd_list) is dict:
+                        data['file_module'] = True
+
+                    # 上面代表一个section里面具体的一个module结束了
+                    return data
 
                 else:
                     exit(' [ %s ] 没有方法 [ %s ]' % (mod_name, mod_action))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from Arya.backends.base_module import BaseSaltMoude
 import os
-
+from Arya.backends import tasks
 
 class State(BaseSaltMoude):
 
@@ -33,32 +33,16 @@ class State(BaseSaltMoude):
                             # 根据配置文件的名字，在plugins中判断是否存在此模块
                             base_mode_name = mod_name.split('.')[0]  # user
 
-                            # 在目录plugin 判断是否有user.py 模块
-                            plugin_file_path = '%s/%s.py' % (self.settings.SALT_PLUGINS_DIR, base_mode_name)
+                            module_obj = self.get_module_instance(base_mode_name=base_mode_name, os_type=os_type)
+                            moudle_parse_result = module_obj.syntax_parser(section_name, mod_name, mod_data, os_type)
+                            self.config_data_dic[os_type].append(moudle_parse_result)
 
-                            if os.path.isfile(plugin_file_path):
-                                # user.py存在， 则导入模块Arya.plugins.user的包
-                                # <module 'Arya' from '/vagrant/Pecah_stack/stack/Arya/__init__.py'>
-                                module_plugin = __import__('plugins.%s' % base_mode_name)
-                                module_file = getattr(module_plugin, base_mode_name)  # 这里导入相对应的模块
+                print('config_data_dic'.center(60, '*'))
+                print(self.config_data_dic)
 
-                                # 根据操作系统类型来判断是否在模块下（user）有这个类CentosUser
-                                # 操作系统类型的类CentosUser  类型+user
-                                special_os_module_name = '%s%s' % (os_type.capitalize(), base_mode_name.capitalize()) # CentosUser
-                                print('------> ', special_os_module_name)
-                                # Arya.plugins.user里是否存在CentosUser 这个类
-                                if hasattr(module_file, special_os_module_name):
-                                    # 如果存在，则导入
-                                    module_instance = getattr(module_file, special_os_module_name)
-
-                                else:
-                                    module_instance = getattr(module_file, base_mode_name.capitalize())
-
-                                module_obj = module_instance(self.sys_args, self.db_models, self.settings)
-                                module_obj.syntax_parser(section_name, mod_name, mod_data)
-
-                            else:
-                                exit('[ %s ] is not exist' % base_mode_name)
+                # 生成任务mq消息
+                new_task_obj = tasks.TaskHandle(self.db_models,self.config_data_dic,self.settings,self)
+                new_task_obj.dispatch_task() # 分发任务
 
             except IndexError as e:
                 exit('state file must -f after')

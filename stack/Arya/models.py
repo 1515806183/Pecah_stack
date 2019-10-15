@@ -49,5 +49,14 @@ class HostGroup(models.Model):
         db_table = "tb_hostgroup"
 
 
+class Task(models.Model):
+    # MQ表
+    datetime = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.id
+
+    class Meta:
+        db_table = "tb_task"
+
 
 

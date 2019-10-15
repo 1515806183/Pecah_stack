@@ -1,22 +1,43 @@
 from django.test import TestCase
 
 # Create your tests here.
-import re
-expr = "'vage' * 100 ".replace(' ', '')  # 'vage'-100
-
-sign = re.findall(r"[\*\+/-]", expr)[-1]  # -
 
 
-vage_str, num = expr.split(sign)  # ["'vage'", '100']
+a = {'centos':
+         [
+             {'cmd_list':
+                  ['useradd apache -u 87 -g 87 -s /bin/nologin', 'echo "apache:apache" | sudo chpasswd'],
+              'require_list':
+                  ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w apache -q;echo $?', 'test -f /etc/httpd/conf/httpd.conf; echo &?']},
+             {'cmd_list':
+                  ['useradd apache -g 87'],
+              'require_list':
+                  ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w apache -q;echo $?']},
 
-vage_str = '[1, 2, 3]'
 
-vage = eval(vage_str)
+             {'cmd_list':
+                  {'section': '/etc/httpd/conf/httpd.conf',
+                   'mod_data':
+                       [{'source': 'salt://apache/httpd.conf'}, {'user': 'root'}, {'group': 'root'}, {'mode': 644}, {'require': [{'pkg': 'nginx'}]}]},
+              'require_list': ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w nginx -q;echo $?'],
+              'file_module': True}],
 
-li = "[x %s %s for x in %s]" % (sign, num, vage)
 
-print(eval(li))
+    'redhat': [{'cmd_list':
+                    ['useradd apache -u 87 -g 87 -d /var/www/html -s /bin/nologin', 'echo "apache:apache" | sudo chpasswd'],
+                'require_list':
+                    ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w apache -q;echo $?', 'test -f /etc/httpd/conf/httpd.conf; echo &?']},
+               {'cmd_list':
+                    ['useradd apache -g 87'],
 
+                'require_list': ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w apache -q;echo $?']},
+
+               {'cmd_list':
+                    {'section': '/etc/httpd/conf/httpd.conf',
+                     'mod_data': [{'source': 'salt://apache/httpd.conf'}, {'user': 'root'}, {'group': 'root'}, {'mode': 644}, {'require': [{'pkg': 'nginx'}]}]},
+                'require_list': ['more /etc/group | awk -F ":" \'{print $1}\' | grep -w nginx -q;echo $?'],
+
+                'file_module': True}]}
 
 
 

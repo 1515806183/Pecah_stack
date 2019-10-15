@@ -124,3 +124,11 @@ STATIC_URL = '/static/'
 SALT_CONFIG_FILES_DIR = "%s/Arya/satl_configs" % BASE_DIR
 
 SALT_PLUGINS_DIR = "%s/Arya/plugins" % BASE_DIR
+
+
+# MQ 配置
+MQ_CONN = {
+    'host':'192.168.33.10',
+    'port': 5672,
+    'password': 'admin'
+}

@@ -47,8 +47,12 @@ class User(BaseSaltMoude):
 
         cmd_list.append(' '.join(self.raw_cmds))
         cmd_list.extend(self.single_line_cmds)
-
         print('\033[0;41mcmd_list: \033[0m', cmd_list)
+
+        return cmd_list
+
+    def is_reuqired(self, *args, **kwargs):
+        pass
 
 
 class CentosUser(User):
