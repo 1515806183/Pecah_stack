@@ -45,4 +45,6 @@ a = {'centos':
 
 
 
+b = "'Linux-2.6.32-431.el6.x86_64-x86_64-with-redhat-6.5-Santiago'".split('-')[-3]
 
+print(b)

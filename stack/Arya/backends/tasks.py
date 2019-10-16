@@ -32,7 +32,7 @@ class TaskHandle(object):
     def dispatch_task(self):
         # 任务格式化和分发
         if self.apply_new_task(): # 数据库ID创建成功
-            print('MQ开始发送消息...%s' % self.module_obj.host_list)
+            print('MQ开始发送消息-------> %s' % self.module_obj.host_list)
             self.callback_queue_name = 'TASK_CALLBACK_%s' % self.task_id  # 设置queue的名字
 
             data = {

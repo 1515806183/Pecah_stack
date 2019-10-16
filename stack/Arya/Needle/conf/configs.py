@@ -16,3 +16,15 @@ MQ_CONN = {
     'port': 5672,
     'password': 'admin'
 }
+
+# 文件不同处理类型
+FILE_SERVER = {
+    'http':'%s:8000' % SALT_MASTER.strip(),
+    'salt':SALT_MASTER
+}
+
+# 文件在服务器存储的位置
+FILE_SREVER_BASE_PATH = '/salt/file_center'
+
+# 文件下载位置
+FILE_STORE_PATH = "%s/var/downloads/" % BASE_DIR

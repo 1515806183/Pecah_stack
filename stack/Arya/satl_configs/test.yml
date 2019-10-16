@@ -22,7 +22,7 @@ apache:
 
 /etc/httpd/conf/httpd.conf:
   file.managed:
-    - source: salt://apache/httpd.conf
+    - source: http://apache/httpd.conf
     - user: root
     - group: root
     - mode: 644

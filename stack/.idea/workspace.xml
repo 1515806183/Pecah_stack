@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b1e39a1-8f2e-48ab-9501-24be047e6e2c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Arya/backends/base_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/backends/base_module.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/plugins/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/plugins/file.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/plugins/group.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/plugins/group.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/plugins/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/plugins/state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/plugins/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/plugins/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/satl_configs/test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/satl_configs/test.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arya/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arya/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stack/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/stack/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -67,7 +58,7 @@
         <entry file="file://$PROJECT_DIR$/Arya/Needle/conf/configs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+              <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -84,8 +75,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Arya/Needle/core/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="84" column="47" selection-start-line="84" selection-start-column="47" selection-end-line="84" selection-end-column="47" />
+            <state relative-caret-position="329">
+              <caret line="73" column="41" selection-start-line="73" selection-start-column="41" selection-end-line="73" selection-end-column="41" />
               <folding>
                 <element signature="e#24#48#0" expanded="true" />
               </folding>
@@ -96,8 +87,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Arya/backends/tasks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73">
-              <caret line="47" column="26" lean-forward="true" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
+            <state relative-caret-position="705">
+              <caret line="47" column="26" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -161,7 +152,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="308" />
     <option name="y" value="33" />
     <option name="width" value="1189" />
@@ -229,7 +220,7 @@
     <property name="DatabaseDriversLRU" value="sqlite" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.console.LAST_STATE" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../shixunyun/linux" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../shixunyun/weblogic" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -394,18 +385,18 @@
       <workItem from="1570846131348" duration="12433000" />
       <workItem from="1570940171802" duration="9000" />
       <workItem from="1571046553163" duration="6219000" />
-      <workItem from="1571119392732" duration="12568000" />
+      <workItem from="1571119392732" duration="13189000" />
+      <workItem from="1571133747721" duration="33000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62741000" />
+    <option name="totallyTimeSpent" value="63395000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="308" y="33" width="1189" height="815" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4990991" visible="true" weight="0.17714792" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4990991" visible="true" weight="0.17980514" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.5009009" side_tool="true" weight="0.1361015" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
@@ -511,13 +502,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/ks_to_km_order2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="342" column="13" lean-forward="true" selection-start-line="342" selection-start-column="13" selection-end-line="342" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/Desktop/ks_to_km_order2.py" />
     <entry file="file://$PROJECT_DIR$/manage.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -623,20 +608,6 @@
     <entry file="file://$PROJECT_DIR$/Arya/Needle/conf/registered_modules.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Arya/Needle/needle.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Arya/backends/tasks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="73">
-          <caret line="47" column="26" lean-forward="true" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/stack/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="313">
@@ -647,14 +618,28 @@
     <entry file="file://$PROJECT_DIR$/Arya/Needle/conf/configs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+          <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Arya/Needle/needle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Arya/backends/tasks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="47" column="26" selection-start-line="47" selection-start-column="26" selection-end-line="47" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Arya/Needle/core/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="84" column="47" selection-start-line="84" selection-start-column="47" selection-end-line="84" selection-end-column="47" />
+        <state relative-caret-position="329">
+          <caret line="73" column="41" selection-start-line="73" selection-start-column="41" selection-end-line="73" selection-end-column="41" />
           <folding>
             <element signature="e#24#48#0" expanded="true" />
           </folding>

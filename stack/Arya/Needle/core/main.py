@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+import subprocess
+
 from conf import configs
 import pika
-import json,threading
+import json, threading
+import platform
+from modules import files
 
 
 class CommandManagement(object):
@@ -83,5 +87,139 @@ class Needle():
         :return:
         """
         print(" [x] Received a task msg ", body)
-        # thread = threading.Thread(target=self.start_thread, args=(body,))
-        # thread.start()
+        thread = threading.Thread(target=self.start_thread, args=(body,))
+        thread.start()
+
+    def start_thread(self, task_body):
+        print('\033[31;1m start a thread to process task\033[0m')
+        task = TaskHandle(self, task_body)
+        task.processing()
+
+
+class TaskHandle(object):
+    def __init__(self, main_obj, task_body):
+        self.main_obj = main_obj  # 是Needle object
+        self.task_body = json.loads(task_body.decode())
+
+    def processing(self):
+        check_res = self.check_data_validation()  # 验证tsak数据的合法性
+        if check_res:
+            self.current_os_type, data = check_res  # ostype, data
+            self.parse_task_data(self.current_os_type, data)
+
+    def check_data_validation(self):
+        """
+        确保服务器发过来的数据在本客户上可以执行
+        :return:
+        """
+        print('---- check task ----')
+        # 取操作系统型号
+        os_version = platform.platform().lower().split('-')[-3]
+
+        for os_type, data in self.task_body['data'].items():
+            if os_type in os_version:
+                return os_type, data
+            else:
+                print("\033[31;1msalt is not supported on this os \033[0m", os_version)
+
+    def parse_task_data(self, os_type, data):
+        """
+        解析任务数据并执行
+        :param os_type:
+        :param data:
+        :return:
+        """
+        applied_list = []  # 所有执行了子任务放在这个列表
+        applied_result = []  # 子任务执行完后的结果
+        last_loop_section_set_len = len(applied_list)
+
+        while 1:
+            for section in data:
+                if section.get('called_flag'):  # 如果有代表执行过
+                    print('------------------------------called already ')
+                else:
+                    apply_status, result = self.apply_section(section)
+                    # 表示命令执行成功
+                    if apply_status:
+                        # 把执行过的命令和结果保存
+                        applied_list.append(section)
+                        applied_result += result
+
+            if len(applied_list) == last_loop_section_set_len:
+                # 这两个变量相等, 代表2种可能, 要么是都执行完了, 要么是依赖关系形成了死锁
+                break
+
+            last_loop_section_set_len = len(applied_list)
+
+    def apply_section(self, section_data):
+        """
+        执行指定的task section
+        :param section_data:
+        :return:
+        """
+        print("\033[32;1mapplying section\033[0m".center(50, '-'))
+        if section_data.get('require_list') != None:
+            # 检测requsite条件是否满足
+            if self.check_pre_requisites(section_data.get('require_list')) == 0:
+                if section_data.get('file_module'):  # 单独处理文件
+                    res = self.file_handle(section_data)
+                else:
+                    res = self.run_cmds(section_data.get('cmd_list'))
+                section_data['called_flag'] = True
+                return [True, res]
+            else:
+                print("\033[33;1m依赖不满足\033[0m")
+                return [False, None]  # 依赖不满足
+
+        else: #没依赖要求,直接执行
+            if section_data.get('file_source') == True: #文件section需要单独处理
+                res = self.file_handle(section_data)
+            else:
+                res = self.run_cmds(section_data['raw_cmds'])
+
+            section_data['called_flag'] = True
+            return [True,res]
+
+    def check_pre_requisites(self, require_list):
+        """
+        检测依赖条件是否成立
+        :param require_list:
+        :return:
+        """
+        print('----check pre requisites:')
+        condition_results = []
+        for condition in require_list:
+            # 单独开启进程执行命令
+            print(condition)
+            cmd_res = subprocess.run(condition, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            condition_results.append(int(cmd_res.stdout.decode().strip()))  # 返回的bytes类型,必须转换
+
+        print(condition_results)
+        return sum(condition_results)  # 所有命令执行成功的话就是 0
+
+    def file_handle(self, section_data):
+        """
+        对文件进行操作,服务器返回的未处理文件数据
+        :param section_data:
+        :return:
+        """
+        file_module_obj = files.FileModule(self)
+        file_module_obj.process(section_data)
+
+        return []
+
+    def run_cmds(self, cmd_list):
+        """
+        运行命令,返回结果
+        :param cmd_list:
+        :return:
+        """
+        cmd_results = []
+        for cmd in cmd_list:
+            # cmd_res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # cmd_results.append([cmd_res.returncode, cmd_res.stderr.decode()]) 3.5以前
+            cmd_res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            cmd_results.append(int(cmd_res.stdout.decode().strip()))
+
+        return sum(cmd_results)  # 所有命令如果执行成功,返回是0

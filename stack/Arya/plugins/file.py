@@ -21,5 +21,5 @@ class File(BaseSaltMoude):
 
     def is_reuqired(self, *args, **kwargs):
         file_path = args[1]
-        cmd = 'test -f %s; echo &?' % file_path
+        cmd = 'test -f %s; echo $?' % file_path
         return cmd
