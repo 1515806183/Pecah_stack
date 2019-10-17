@@ -19,7 +19,7 @@ class Group(BaseSaltMoude):
         """
         cmd_list = []
         username = kwargs.get('section')
-        self.raw_cmds.insert(0, 'useradd %s' % username)
+        self.raw_cmds.insert(0, 'groupadd %s' % username)
 
         cmd_list.append(' '.join(self.raw_cmds))
         cmd_list.extend(self.single_line_cmds)

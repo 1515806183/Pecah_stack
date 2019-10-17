@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from core.utils import MsgPrint
 
 class BaseSaltModule(object):
     def __init__(self,task_obj):
@@ -20,4 +20,13 @@ class BaseSaltModule(object):
 
         if sub_action: #如果有,就执行,基本只针对 文件 模块
             sub_action_func = getattr(self,'func__%s' % sub_action)
-            sub_action_func(module_data=module_data['raw_cmds'])
+            sub_action_func(module_data=module_data['cmd_list'])
+
+
+    def func__require(self,*args,**kwargs):
+        print('require:',*args,**kwargs)
+
+
+    def type_validate(self,item_name,data,data_type):
+        if type(data) is not data_type:
+            MsgPrint.error("[%s] requires %s ,not a %s" %(item_name,data_type,type(data)))

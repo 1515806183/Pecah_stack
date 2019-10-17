@@ -91,7 +91,7 @@ class Needle():
         thread.start()
 
     def start_thread(self, task_body):
-        print('\033[31;1m start a thread to process task\033[0m')
+        print('\033[31;1m 线程启动开始执行任务 \033[0m')
         task = TaskHandle(self, task_body)
         task.processing()
 
@@ -112,7 +112,7 @@ class TaskHandle(object):
         确保服务器发过来的数据在本客户上可以执行
         :return:
         """
-        print('---- check task ----')
+        # print('---- 检查数据,确保数据能执行  ----')
         # 取操作系统型号
         os_version = platform.platform().lower().split('-')[-3]
 
@@ -135,6 +135,8 @@ class TaskHandle(object):
 
         while 1:
             for section in data:
+                print("\033[31;1m ****************开始解析任务数据********************** \033[0m")
+                print("\033[31;1m  \033[0m", section)
                 if section.get('called_flag'):  # 如果有代表执行过
                     print('------------------------------called already ')
                 else:
@@ -151,16 +153,21 @@ class TaskHandle(object):
 
             last_loop_section_set_len = len(applied_list)
 
+        # 接下来把执行结果返回给服务器
+        print('\033[42;1msend task result to task callback queue:\033[0m', self.task_body['callback_queue'])
+        self.task_callback(self.task_body['callback_queue'], applied_result)
+
     def apply_section(self, section_data):
         """
         执行指定的task section
         :param section_data:
         :return:
         """
-        print("\033[32;1mapplying section\033[0m".center(50, '-'))
+        print("\033[32;1m 开始判断require_list依赖是否满足\033[0m".center(50, '-'))
         if section_data.get('require_list') != None:
             # 检测requsite条件是否满足
             if self.check_pre_requisites(section_data.get('require_list')) == 0:
+                print("\033[33;1m ****************require_list依赖 满足**********************\033[0m")
                 if section_data.get('file_module'):  # 单独处理文件
                     res = self.file_handle(section_data)
                 else:
@@ -168,14 +175,14 @@ class TaskHandle(object):
                 section_data['called_flag'] = True
                 return [True, res]
             else:
-                print("\033[33;1m依赖不满足\033[0m")
+                print("\033[33;1m ****************require_list依赖不满足**********************\033[0m")
                 return [False, None]  # 依赖不满足
 
-        else: #没依赖要求,直接执行
-            if section_data.get('file_source') == True: #文件section需要单独处理
+        else: # 没依赖要求,直接执行
+            if section_data.get('file_module') == True: #文件section需要单独处理
                 res = self.file_handle(section_data)
             else:
-                res = self.run_cmds(section_data['raw_cmds'])
+                res = self.run_cmds(section_data['cmd_list'])
 
             section_data['called_flag'] = True
             return [True,res]
@@ -186,14 +193,13 @@ class TaskHandle(object):
         :param require_list:
         :return:
         """
-        print('----check pre requisites:')
+        # print('---- 检查依赖环境 require_list 是否成立 ----')
         condition_results = []
         for condition in require_list:
             # 单独开启进程执行命令
             print(condition)
             cmd_res = subprocess.run(condition, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             condition_results.append(int(cmd_res.stdout.decode().strip()))  # 返回的bytes类型,必须转换
-
         print(condition_results)
         return sum(condition_results)  # 所有命令执行成功的话就是 0
 
@@ -203,9 +209,9 @@ class TaskHandle(object):
         :param section_data:
         :return:
         """
+        print('---- 对文件进行操作  是否成立 ----')
         file_module_obj = files.FileModule(self)
         file_module_obj.process(section_data)
-
         return []
 
     def run_cmds(self, cmd_list):
@@ -214,12 +220,36 @@ class TaskHandle(object):
         :param cmd_list:
         :return:
         """
+        print('---- 运行命令,返回结果 ----')
         cmd_results = []
         for cmd in cmd_list:
-            # cmd_res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # cmd_results.append([cmd_res.returncode, cmd_res.stderr.decode()]) 3.5以前
+            print(cmd)
             cmd_res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            cmd_results.append([cmd_res.returncode, cmd_res.stderr.decode()])  # 3.5以前
+            # cmd_res = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #
+            # cmd_results.append(int(cmd_res.stdout.decode().strip()))
+        print('\033[41;1m执行结果:\033[0m', cmd_results)
+        return cmd_results  # 所有命令如果执行成功,返回是0
 
-            cmd_results.append(int(cmd_res.stdout.decode().strip()))
+    def task_callback(self, callback_queue, callback_data):
+        """
+        把任务执行结果返回给服务器
+        :param callback_queue:
+        :param applied_result:
+        :return:
+        """
+        data = {
+            'client_id': self.main_obj.client_id,  # Needle
+            'data': callback_data
+        }
 
-        return sum(cmd_results)  # 所有命令如果执行成功,返回是0
+        #声明queue  TASK_CALLBACK_137
+        self.main_obj.mq_channel.queue_declare(queue=callback_queue)
+        self.main_obj.mq_channel.basic_publish(exchange='',
+                                               routing_key=callback_queue,
+                                               body=json.dumps(data))
+
+        print(" [x] Sent task callback to [%s]" % callback_queue)
+
+

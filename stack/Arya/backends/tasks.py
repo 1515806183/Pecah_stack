@@ -63,8 +63,8 @@ class TaskHandle(object):
 
         self.mq_channel.basic_publish(exchange='', routing_key=queue_name, body=json.dumps(data))
 
-    def task_callback(ch, method, properties, body):
-        print(" [x] Received %r" % (body,))
+    def task_callback(self,ch, method, properties, body):
+        print(body)
 
     def close_connection(self):
         self.mq_conn.close()
@@ -79,6 +79,5 @@ class TaskHandle(object):
 
         self.mq_channel.basic_consume(self.task_callback, queue=self.callback_queue_name, no_ack=True)
         print(' [*] Waiting for messages. To exit press CTRL+C')
-
         self.mq_channel.start_consuming()
 

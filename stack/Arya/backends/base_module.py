@@ -10,6 +10,7 @@ class BaseSaltMoude(object):
 
     def __init__(self, sys_args, db_models, settings):
         self.sys_args = sys_args
+        print('***************************', sys_args)
         self.db_models = db_models
         self.settings = settings
         self.host_list = []
@@ -177,6 +178,7 @@ class BaseSaltMoude(object):
 
                     if type(cmd_list) is dict:
                         data['file_module'] = True
+                        data['sub_action'] = cmd_list.get('sub_action')
 
                     # 上面代表一个section里面具体的一个module结束了
                     return data

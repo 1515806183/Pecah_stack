@@ -17,6 +17,7 @@ class File(BaseSaltMoude):
         pass
 
     def managed(self, *args, **kwargs):
+        kwargs['sub_action'] = 'managed'
         return kwargs
 
     def is_reuqired(self, *args, **kwargs):
